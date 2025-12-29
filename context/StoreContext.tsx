@@ -380,8 +380,6 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         setCases(prev => prev.map(c => {
             if (c.id === caseId) {
                 // IMPORTANT: Do not update amountPaid yet, wait for verification
-                // But we add the payment record so admin can see it
-                
                 const timelineEvent: TimelineEvent = {
                      id: Date.now().toString(),
                      title: 'แจ้งชำระเงินงวด (Payment Submitted)',
@@ -456,14 +454,8 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setCases(prev => prev.map(c => {
         if (c.id === id) {
             // Verify all pending payments when case is approved
-            // Calculate total paid from verified + pending(now verified)
-            let addedAmount = 0;
             const updatedPayments = c.financials.payments.map(p => {
                 if (p.status === 'Pending') {
-                    // Only add to paid amount if it wasn't counted yet (initial payment logic might vary, assuming initial isn't counted in paid yet for safety in this logic)
-                    // Actually, rely on re-calc logic or just mark verified. 
-                    // Simpler: Just mark verified. 'registerNewCase' set amounts already?
-                    // registerNewCase set amountPaid. So we just mark verified.
                     return { ...p, status: 'Verified' as const };
                 }
                 return p;

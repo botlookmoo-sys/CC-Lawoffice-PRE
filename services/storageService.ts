@@ -44,7 +44,8 @@ export const saveFileToDB = async (file: File): Promise<string> => {
     return id;
   } catch (error) {
     console.error("DB Save Error:", error);
-    throw error;
+    // Fallback if DB fails (though rarely happens)
+    return URL.createObjectURL(file);
   }
 };
 
@@ -70,7 +71,7 @@ export const getFileUrl = async (idOrUrl: string): Promise<string | null> => {
     if (!idOrUrl) return null;
     
     // If it's already a URL (http/https/data), return it
-    if (idOrUrl.startsWith('http') || idOrUrl.startsWith('data:')) {
+    if (idOrUrl.startsWith('http') || idOrUrl.startsWith('data:') || idOrUrl.startsWith('blob:')) {
         return idOrUrl;
     }
 
